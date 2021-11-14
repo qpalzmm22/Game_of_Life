@@ -1,5 +1,4 @@
-/* Simulates Game of life...
- * I hope to make it so that it's easy to test whole different rule sets
+/* Simulates Game of life...  I hope to make it so that it's easy to test whole different rule sets
  *
  */
 
@@ -11,23 +10,23 @@
 #define MAPSIZE 10
 
 //int oldmap[MAPSIZE + 10][MAPSIZE + 10];
-int oldmap[20][20];
+int oldmap[MAPSIZE][MAPSIZE];
 int newmap[MAPSIZE][MAPSIZE];
 
 // user defiend initial points
 void setINIT(){
-    oldmap[0][0] = 100;
-    oldmap[0][1] = 101;
+    oldmap[0][0] = 1;
+    oldmap[0][1] = 1;
     oldmap[5][5] = 1;
     oldmap[5][6] = 1;
     oldmap[5][7] = 1;
 }
 
 
-void printMap(int ** map){
+void printMap(int (* map)[MAPSIZE]){
     for(int i = 0; i < MAPSIZE ; i++){
         for(int j = 0; j < MAPSIZE; j++){
-            printf("%c", &map[j][i]?'X':'0');
+            printf("%c", map[j][i]?'X':'0');
         }
         printf("\n");
     }
@@ -36,51 +35,51 @@ void printMap(int ** map){
 // returns number of "On" cells near (x, y) with depth 1
 // TODO : Could implement with more depth
 int
-checkNear(int x, int y, int** map){
+checkNear(int x, int y, int(* map)[MAPSIZE]){
     int depth = 1;
     int count = 0;
 
     // Left Boundary
-    if(x - depth >= 0 && &map[x - depth][y])    
+    if(x - depth >= 0 && map[x - depth][y])    
         count++;
     
     // Right Boundary
-    if(x + depth < MAPSIZE && &map[x + depth][y])    
+    if(x + depth < MAPSIZE && map[x + depth][y])    
         count++;
     
     // Top Boundary
-    if(y - depth >= 0 && &map[x][y - depth])    
+    if(y - depth >= 0 && map[x][y - depth])    
         count++;
 
     // Bottom Boundary 
-    if(y + depth < MAPSIZE && &map[x][y + depth])    
+    if(y + depth < MAPSIZE && map[x][y + depth])    
         count++;
     
     // Top Left
-    if(x - depth >= 0 && y - depth >= 0 && &map[x - depth][y - depth])    
+    if(x - depth >= 0 && y - depth >= 0 && map[x - depth][y - depth])    
         count++;
     
     // Top Right
-    if(x + depth < MAPSIZE && y - depth >= 0 && &map[x + depth][y - depth])    
+    if(x + depth < MAPSIZE && y - depth >= 0 && map[x + depth][y - depth])    
         count++;
     
     // Bottom Left
-    if(x - depth >= 0  && y + depth >= 0 && &map[x - depth][y + depth])    
+    if(x - depth >= 0  && y + depth >= 0 && map[x - depth][y + depth])    
         count++;
 
     // Bottom Rigt
-    if(x + depth < MAPSIZE && y + depth < MAPSIZE  && &map[x + depth][y + depth])    
+    if(x + depth < MAPSIZE && y + depth < MAPSIZE  && map[x + depth][y + depth])    
         count++;
 
     return count;
 }
 
-void lifeGameRule(int ** prevGen, int ** nextGen){
+void lifeGameRule(int (* prevGen)[MAPSIZE], int (* nextGen)[MAPSIZE]){
    // printf("%p, %p\n", prevGen, nextGen);
     for(int i = 0; i < MAPSIZE; i++){
         for(int j = 0; j < MAPSIZE; j++){
             int nearCell = checkNear(j,i, prevGen);
-            printf("[%d, %d] : %d \n", j, i, nearCell);
+//            printf("[%d, %d] : %d \n", j, i, nearCell);
 
             nextGen[i][j] = 0;
 
@@ -98,58 +97,26 @@ int main(){
     
     setINIT();
     
-    int **p_oldmap = oldmap;
-    int ** p_newmap = newmap;
+    int (*p_oldmap)[MAPSIZE] = &oldmap;
+    int (*p_newmap)[MAPSIZE] = &newmap;
     
-    for(int i = 0; i < MAPSIZE ; i++){
-        for(int j = 0; j < MAPSIZE; j++){
-            printf("%d ", oldmap[i][j]);
-        }
-        printf("\n");
-    }
-
-    printf("[0] : %p\n", oldmap);
-    printf("[1] : %p\n", p_oldmap);
-    
-    for(int i = 0; i < MAPSIZE ; i++){
-        for(int j = 0; j < MAPSIZE; j++){
-            //printf("%d ", *(p_oldmap + (4 * i) +(j*2)));
-            printf("%d ", p_oldmap[i][j]);
-            
-        }
-        printf("\n");
-    }
+    printMap(p_oldmap);
     
     void * p_tmp;
     
-    printf("The map : %p\n", oldmap);
-    printf("pmap : %p\n", p_oldmap);
-    printf("\n");
-    
-    printf("The map: %p\n", oldmap[0]);
-    printf("pp: %p\n", &p_oldmap[0]);
-    printf("\n");
-    
-    //printf("The map: %p\n", oldmap[1]);
-    //printf("pp: %p\n", *p_oldmap[1]);
-    
-    printf("The map: %d\n", oldmap[10][10]);
-    printf("pp: %d\n", p_oldmap[10][10]);
-    //printMap(p_oldmap);
-    
-    int a = 0;
+    int gen = 0;
     while(1){
-
-      //  lifeGameRule(p_oldmap, p_newmap);
-
-      //  printMap(p_newmap);
         
-    //    p_tmp = p_oldmap;
-      //  p_oldmap = p_newmap;
-        //p_newmap = p_tmp;
+        lifeGameRule(p_oldmap, p_newmap);
 
-        usleep(500000);
+        printf("\n\n ------- %d - th Gen ------ \n\n", gen++);
+        printMap(p_newmap);
+        
+        p_tmp = p_oldmap;
+        p_oldmap = p_newmap;
+        p_newmap = p_tmp;
+
+        usleep(1000000);
     }
     return 0;
 }
-
