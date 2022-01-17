@@ -1,8 +1,16 @@
 language : c
 
+services:
+  - docker
+
+before_install:
+  - echo "=== Before Install ==="
+
 script:
   - make
+  - gol
 
-install:
+after_install:
+  - echo "=== After Install ==="
   - docker version
   - docker-compose version
