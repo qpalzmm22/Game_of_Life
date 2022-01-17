@@ -8,7 +8,6 @@ before_install:
 
 script:
   - make
-  - ./gol
 
 after_install:
   - echo "=== After Install ==="
