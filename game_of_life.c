@@ -11,7 +11,7 @@
 
 #define MAPSIZEX 250
 #define MAPSIZEY 60
-//              012345678
+//            xx012345678
 #define L_GOL 0b001100000
 #define C_GOL 0b000100000
 
